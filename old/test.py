@@ -1,0 +1,5 @@
+print(sum(1, 2))
+print(sum(True, False))
+print(sum('a', 'b'))
+print(sum("abc", "def"))
+print(sum([0, 0], [1, 1]))
