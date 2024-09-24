@@ -72,12 +72,10 @@ def add_nodes(node, parent_id=None):
 
 
 pgm = """def sum(a, b):
-    c = a + b
-    if c > 10:
-       c = 10
+    if a + b > 10:
+        print("Yes")
     else:
-        c = 30
-sum(0, 0)"""
+        print("No")"""
 
 tree = ast.parse(pgm)
 
