@@ -3,9 +3,8 @@ from reader import read
 import c0
 import c1
 import smt
+import astgraph
 
-cases = ["sum(11, 0)", "sum(10, 0)"]
-total_cases = len(cases)
 executed_lines = {}
 
 
@@ -20,10 +19,10 @@ def instrument_code(code, transformer):
     return ast.unparse(modified_tree)
 
 
-def work(file, func):
+def utest(file, func):
     (pgm, func) = read(file, func)
-    smt.generate_constraints(pgm)
-
+    astgraph.graph(pgm)
+    cases = smt.generate_constraints(pgm, func)
     pgm_and_cases = pgm + "\n"
     for i, case in enumerate(cases):
         pgm_and_cases += case
@@ -35,6 +34,7 @@ def work(file, func):
     # print("Instrumented code:")
     # print(instrumented_code1)
     exec(instrumented_code1)
+    print("===================================")
     t0.analyze_coverage(pgm, executed_lines)
 
     executed_lines.clear()
@@ -43,5 +43,6 @@ def work(file, func):
     instrumented_code2 = instrument_code(pgm_and_cases, t1)
     # print("Instrumented code:")
     # print(instrumented_code2)
+    print("Output:")
     exec(instrumented_code2)
     t1.analyze_coverage(pgm, executed_lines)

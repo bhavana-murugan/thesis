@@ -1,8 +1,6 @@
 import ast
 from graphviz import Digraph
-
-# Function to analyse AST and identify statements and branches
-
+from reader import read
 
 def analyze_ast(node):
     statements = []
@@ -26,9 +24,7 @@ def analyze_ast(node):
     Analyzer().visit(node)
     return statements, branches
 
-# Function to add nodes to the graph
-
-def add_nodes(node, parent_id=None):
+def add_nodes(node, statements, branches, dot, parent_id=None):
     node_id = str(id(node))
 
     # Create a label based on the node type and relevant attributes
@@ -68,28 +64,16 @@ def add_nodes(node, parent_id=None):
         dot.edge(parent_id, node_id)
 
     for child in ast.iter_child_nodes(node):
-        add_nodes(child, node_id)
+        add_nodes(child, statements, branches, dot, node_id)
 
 
-pgm = """def sum(a, b):
-    if a + b > 10:
-        print("Yes")
-    else:
-        print("No")"""
-
-tree = ast.parse(pgm)
-
-# Analyse the AST
-statements, branches = analyze_ast(tree)
-# Flatten the branches list to count individual branches
-flattened_branches = [item for sublist in branches for item in (sublist if isinstance(sublist, list) else [sublist])]
-# Count the total number of statements
-total_statements = len(statements) + len(flattened_branches)
-print(f"Number of statements: {total_statements}")
-print(f"Number of branches: {len(flattened_branches)}")
-# Create a Graphviz Digraph object
-dot = Digraph(comment='AST')
-# Add nodes starting from the root
-add_nodes(tree)
-# Render the graph to a file and open it
-dot.render('ast_tree', format='pdf', view=True)
+def graph(pgm):
+    tree = ast.parse(pgm)
+    statements, branches = analyze_ast(tree)
+    flattened_branches = [item for sublist in branches for item in (sublist if isinstance(sublist, list) else [sublist])]
+    total_statements = len(statements) + len(flattened_branches)
+    print(f"Number of statements: {total_statements}")
+    print(f"Number of branches: {len(flattened_branches)}"+"\n"+"===================================")
+    dot = Digraph(comment='AST')
+    add_nodes(tree, statements, branches, dot)
+    dot.render('ast_tree', format='pdf', view=True)

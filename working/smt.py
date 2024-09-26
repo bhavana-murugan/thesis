@@ -1,6 +1,5 @@
 import ast
 from z3 import *
-# pip install z3-solver
 
 
 class ConstraintExtractor(ast.NodeVisitor):
@@ -67,7 +66,7 @@ class ConstraintExtractor(ast.NodeVisitor):
             return self.constraints[-1]
 
 
-def generate_constraints(code):
+def generate_constraints(code, func):
     tree = ast.parse(code)
     extractor = ConstraintExtractor()
     extractor.visit(tree)
@@ -80,12 +79,18 @@ def generate_constraints(code):
     solver_if = Solver()
     solver_if.add(extractor.if_condition)
 
+    test_cases = []
     print("\nSolving for 'if' branch:")
     if solver_if.check() == sat:
         model = solver_if.model()
-        print("Satisfiable. Model:")
+        print("Satisfiable Model:")
+        test_case = func.__name__ + "("
         for var in extractor.variables:
             print(f"{var} = {model[Int(var)]}")
+            test_case = test_case+ f"{var}={model[Int(var)]}" + ","
+        test_case = test_case[:-1]
+        test_case += ")"
+        test_cases.append(test_case)
     else:
         print("Unsatisfiable")
 
@@ -97,8 +102,14 @@ def generate_constraints(code):
         print("\nSolving for 'else' branch:")
         if solver_else.check() == sat:
             model = solver_else.model()
-            print("Satisfiable. Model:")
+            print("Satisfiable Model:")
+            test_case = func.__name__ + "("
             for var in extractor.variables:
                 print(f"{var} = {model[Int(var)]}")
+                test_case = test_case+ f"{var}={model[Int(var)]}" + ","
+            test_case = test_case[:-1]
+            test_case += ")"
+            test_cases.append(test_case)
         else:
             print("Unsatisfiable")
+    return test_cases

@@ -62,13 +62,19 @@ class c0(ast.NodeTransformer):
         total_lines = len(original_code.split('\n'))
         covered_lines = len(executed_lines)
         coverage_percentage = (covered_lines / total_lines) * 100
+        
+        print("\nLine by line coverage:")
+        for line_num, line in enumerate(original_code.split('\n'), 1):
+            status = "Covered" if line_num in executed_lines else "Not covered"
+            print(f"Line {line_num}: {line.strip()} : {status}")
 
         print("\nCoverage Analysis:")
         print(f"Total lines: {total_lines}")
         print(f"Covered lines: {covered_lines}")
         print(f"C0 Coverage percentage: {coverage_percentage:.2f}%")
+        if coverage_percentage>=65:
+            print("\033[92mC0 - PASS\033[0m")
+        else:
+            print("\033[91mC0 - FAIL\033[0m")
 
-        print("\nLine by line coverage:")
-        for line_num, line in enumerate(original_code.split('\n'), 1):
-            status = "Covered" if line_num in executed_lines else "Not covered"
-            print(f"Line {line_num}: {line.strip()} : {status}")
+        

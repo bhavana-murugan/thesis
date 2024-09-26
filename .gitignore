@@ -1,5 +1,9 @@
 
 .DS_Store
 /.venv
-working/__pycache__/c0.cpython-312.pyc
-working/__pycache__/c1.cpython-312.pyc
+/working/__pycache__
+ast/*.pdf
+ast/ast_tree
+ast/ast_tree.pdf
+working/ast_tree
+working/ast_tree.pdf

@@ -55,8 +55,12 @@ class c1(ast.NodeTransformer):
         print(f"Total branches: {total_lines}")
         print(f"Covered branches: {covered_lines}")
         print(f"C1 Coverage percentage: {coverage_percentage:.2f}%")
+        if coverage_percentage>=65:
+            print("\033[92mC1 - PASS\033[0m")
+        else:
+            print("\033[91mC1 - FAIL\033[0m")
 
-        print("\nLine by line coverage:")
-        for line_num, line in enumerate(original_code.split('\n'), 1):
-            status = "Covered" if line_num in executed_lines else "Not covered"
-            print(f"Line {line_num}: {line.strip()} : {status}")
+        # print("\nLine by line coverage:")
+        # for line_num, line in enumerate(original_code.split('\n'), 1):
+        #     status = "Covered" if line_num in executed_lines else "Not covered"
+        #     print(f"Line {line_num}: {line.strip()} : {status}")
